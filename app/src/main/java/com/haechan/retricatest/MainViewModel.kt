@@ -10,14 +10,21 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 class MainViewModel: ViewModel() {
 
-    private val _sliderValue: MutableStateFlow<Int> = MutableStateFlow(50)
-    val sliderValue: StateFlow<Int> = _sliderValue.asStateFlow()
+    private val _greyScaleSliderValue: MutableStateFlow<Int> = MutableStateFlow(50)
+    val greyScaleSliderValue: StateFlow<Int> = _greyScaleSliderValue.asStateFlow()
+
+    private val _luminositySliderValue: MutableStateFlow<Int> = MutableStateFlow(50)
+    val luminositySliderValue: StateFlow<Int> = _luminositySliderValue.asStateFlow()
 
     private val _effect = Channel<MainEffect>(UNLIMITED)
     val effect = _effect.receiveAsFlow()
 
-    fun setSliderValue(value: Int) {
-        _sliderValue.value = value.coerceIn(0, 100)
+    fun setGreyScaleSliderValue(value: Int) {
+        _greyScaleSliderValue.value = value.coerceIn(0, 100)
+    }
+
+    fun setLuminositySliderValue(value: Int) {
+        _luminositySliderValue.value = value.coerceIn(0, 100)
     }
 
     fun toggleGreyScaleButton() {

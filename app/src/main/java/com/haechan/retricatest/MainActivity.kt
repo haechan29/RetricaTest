@@ -6,7 +6,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.haechan.retricatest.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
@@ -25,16 +30,28 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.lifecycleOwner = this
-        binding.mainViewModel = mainViewModel
-
-        setOnValueChangedToSbMain()
+        initBinding()
+        setOnValueChangedToSbGreyScale()
+        setOnValueChangedToSbLuminosity()
+        collectEffect()
     }
 
-    private fun setOnValueChangedToSbMain() {
-        binding.sbMain.onValueChanged = { value ->
+    private fun initBinding() {
+        binding.lifecycleOwner = this
+        binding.mainViewModel = mainViewModel
+    }
+
+    private fun setOnValueChangedToSbGreyScale() {
+        binding.sbGreyScale.onValueChanged = { value ->
             val percentageValue = ((value + 1f) * 50f).roundToInt()
-            mainViewModel.setSliderValue(percentageValue)
+            mainViewModel.setGreyScaleSliderValue(percentageValue)
+        }
+    }
+
+    private fun setOnValueChangedToSbLuminosity() {
+        binding.sbLuminosity.onValueChanged = { value ->
+            val percentageValue = ((value + 1f) * 50f).roundToInt()
+            mainViewModel.setLuminositySliderValue(percentageValue)
         }
     }
 
@@ -55,9 +72,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleGreyScaleButton() {
         binding.btnGreyScale.isSelected = !binding.btnGreyScale.isSelected
+        binding.groupGreyScale.isVisible = binding.btnGreyScale.isSelected
+        binding.btnLuminosity.isSelected = false
+        binding.groupLuminosity.isVisible = false
     }
 
     private fun toggleLuminosityButton() {
         binding.btnLuminosity.isSelected = !binding.btnLuminosity.isSelected
+        binding.groupLuminosity.isVisible = binding.btnLuminosity.isSelected
+        binding.btnGreyScale.isSelected = false
+        binding.groupGreyScale.isVisible = false
     }
 }
