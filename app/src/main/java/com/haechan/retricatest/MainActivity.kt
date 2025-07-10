@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        binding.lifecycleOwner = this
+        binding.mainViewModel = mainViewModel
+
         setOnValueChangedToSbMain()
     }
 
