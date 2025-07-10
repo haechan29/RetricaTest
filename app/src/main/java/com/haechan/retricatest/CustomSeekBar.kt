@@ -14,6 +14,8 @@ class CustomSeekBar @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
+    var onValueChanged: ((Float) -> Unit)? = null
+
     private var value: Float = 0f
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
@@ -25,6 +27,7 @@ class CustomSeekBar @JvmOverloads constructor(
         ): Boolean {
             val delta = distanceX / width
             value = (value + delta).coerceIn(-1f, 1f)
+            onValueChanged?.invoke(value)
             invalidate()
             return true
         }
@@ -67,6 +70,4 @@ class CustomSeekBar @JvmOverloads constructor(
         }
         canvas.drawLine(centerX, 0f, centerX, height.toFloat(), centerLinePaint)
     }
-
-    fun getNormalizedValue(): Float = value
 }
