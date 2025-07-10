@@ -37,4 +37,27 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.setSliderValue(percentageValue)
         }
     }
+
+    private fun collectEffect() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    mainViewModel.effect.collect {
+                        when (it) {
+                            MainEffect.ToggleGreyScaleButton -> toggleGreyScaleButton()
+                            MainEffect.ToggleLuminosityButton -> toggleLuminosityButton()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun toggleGreyScaleButton() {
+        binding.btnGreyScale.isSelected = !binding.btnGreyScale.isSelected
+    }
+
+    private fun toggleLuminosityButton() {
+        binding.btnLuminosity.isSelected = !binding.btnLuminosity.isSelected
+    }
 }
