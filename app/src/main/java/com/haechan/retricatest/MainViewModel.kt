@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 class MainViewModel: ViewModel() {
 
-    private val _greyScaleSliderValue: MutableStateFlow<Int> = MutableStateFlow(50)
+    private val _greyScaleSliderValue: MutableStateFlow<Int> = MutableStateFlow(0)
     val greyScaleSliderValue: StateFlow<Int> = _greyScaleSliderValue.asStateFlow()
 
-    private val _luminositySliderValue: MutableStateFlow<Int> = MutableStateFlow(50)
+    private val _luminositySliderValue: MutableStateFlow<Int> = MutableStateFlow(0)
     val luminositySliderValue: StateFlow<Int> = _luminositySliderValue.asStateFlow()
 
     private val _effect = Channel<MainEffect>(UNLIMITED)

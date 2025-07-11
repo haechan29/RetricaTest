@@ -16,7 +16,7 @@ class CustomSeekBar @JvmOverloads constructor(
 
     var onValueChanged: ((Float) -> Unit)? = null
 
-    private var value: Float = 0f
+    private var value: Float = -1f
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
         override fun onScroll(
