@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         setOnValueChangedToSbLuminosity()
         collectEffect()
         collectGreyScaleSliderValue()
+        collectLuminositySliderValue()
     }
 
     private fun initBinding() {
@@ -79,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnLuminosity.isSelected = false
         binding.groupLuminosity.isVisible = false
 
+        setLuminosityFilter(0f)
         toggleGreyScaleFilter()
     }
 
@@ -96,6 +98,9 @@ class MainActivity : AppCompatActivity() {
         binding.groupLuminosity.isVisible = binding.btnLuminosity.isSelected
         binding.btnGreyScale.isSelected = false
         binding.groupGreyScale.isVisible = false
+
+        setGreyScaleToImage(1f)
+        toggleLuminosityFilter()
     }
 
     private fun collectGreyScaleSliderValue() {
@@ -115,6 +120,41 @@ class MainActivity : AppCompatActivity() {
             setSaturation(saturation)
         }
         val filter = ColorMatrixColorFilter(grayscaleMatrix)
+        binding.ivMain.colorFilter = filter
+    }
+
+    private fun collectLuminositySliderValue() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mainViewModel.luminositySliderValue.collect { value ->
+                        setLuminosityFilter(value / 100f)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun toggleLuminosityFilter() {
+        val luminosity = if (binding.btnLuminosity.isSelected) {
+            mainViewModel.luminositySliderValue.value / 100f
+        } else {
+            0f
+        }
+        setLuminosityFilter(luminosity)
+    }
+
+    private fun setLuminosityFilter(luminosity: Float) {
+        val scaled = luminosity * 255f * 0.8f
+        val luminosityMatrix = ColorMatrix(
+            floatArrayOf(
+                1f, 0f, 0f, 0f, scaled,
+                0f, 1f, 0f, 0f, scaled,
+                0f, 0f, 1f, 0f, scaled,
+                0f, 0f, 0f, 1f, 0f
+            )
+        )
+        val filter = ColorMatrixColorFilter(luminosityMatrix)
         binding.ivMain.colorFilter = filter
     }
 }
