@@ -118,10 +118,10 @@
             android:layout_marginEnd="20dp"
             android:paddingVertical="8dp"
             android:visibility="gone"
+            android:layout_marginStart="20dp"
             app:layout_constraintStart_toEndOf="@id/barrier_sb_end"
             app:layout_constraintTop_toTopOf="@id/barrier_sb_top"
-            app:layout_constraintBottom_toBottomOf="@id/barrier_sb_bottom"
-            android:layout_marginStart="20dp" />
+            app:layout_constraintBottom_toBottomOf="@id/barrier_sb_bottom" />
 
         <ImageButton
             android:id="@+id/btn_grey_scale"

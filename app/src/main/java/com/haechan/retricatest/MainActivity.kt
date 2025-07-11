@@ -1,8 +1,10 @@
 package com.haechan.retricatest
 
+import android.graphics.ColorFilter
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         initBinding()
         setOnValueChangedToSbGreyScale()
         setOnValueChangedToSbLuminosity()
+        setOnTouchListenerToResetFilterBtn()
         collectEffect()
         collectGreyScaleSliderValue()
         collectLuminositySliderValue()
@@ -58,6 +61,26 @@ class MainActivity : AppCompatActivity() {
         binding.sbLuminosity.onValueChanged = { value ->
             val percentageValue = ((value + 1f) * 50f).roundToInt()
             mainViewModel.setLuminositySliderValue(percentageValue)
+        }
+    }
+
+    private fun setOnTouchListenerToResetFilterBtn() {
+        var temp: ColorFilter? = null
+        binding.tvResetFilter.setOnTouchListener { _, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    temp = binding.ivMain.colorFilter
+                    binding.ivMain.clearColorFilter()
+                    true
+                }
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    binding.ivMain.colorFilter = temp
+                    temp = null
+                    true
+                }
+                else -> false
+            }
         }
     }
 
