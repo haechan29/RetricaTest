@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.haechan.retricatest.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         collectEffect()
         collectGreyScaleSliderValue()
         collectLuminositySliderValue()
+        collectSliderValue()
     }
 
     private fun initBinding() {
@@ -156,5 +158,23 @@ class MainActivity : AppCompatActivity() {
         )
         val filter = ColorMatrixColorFilter(luminosityMatrix)
         binding.ivMain.colorFilter = filter
+    }
+
+    private fun collectSliderValue() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    combine(
+                        mainViewModel.greyScaleSliderValue,
+                        mainViewModel.luminositySliderValue
+                    ) { greyScale, luminosity ->
+                        (binding.btnGreyScale.isSelected && greyScale > 0)
+                            || (binding.btnLuminosity.isSelected && luminosity > 0)
+                    }.collect { isFilterApplied ->
+                        binding.tvResetFilter.isVisible = isFilterApplied
+                    }
+                }
+            }
+        }
     }
 }
