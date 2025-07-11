@@ -1,5 +1,7 @@
 package com.haechan.retricatest
 
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setOnValueChangedToSbGreyScale()
         setOnValueChangedToSbLuminosity()
         collectEffect()
+        collectGreyScaleSliderValue()
     }
 
     private fun initBinding() {
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun collectEffect() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     mainViewModel.effect.collect {
                         when (it) {
@@ -75,6 +78,21 @@ class MainActivity : AppCompatActivity() {
         binding.groupGreyScale.isVisible = binding.btnGreyScale.isSelected
         binding.btnLuminosity.isSelected = false
         binding.groupLuminosity.isVisible = false
+
+        toggleGreyScaleFilter()
+    }
+
+    private fun toggleGreyScaleFilter() {
+        val saturation = if (binding.btnGreyScale.isSelected) {
+            1f - mainViewModel.greyScaleSliderValue.value / 100f
+        } else {
+            1f
+        }
+        val grayscaleMatrix = ColorMatrix().apply {
+            setSaturation(saturation)
+        }
+        val filter = ColorMatrixColorFilter(grayscaleMatrix)
+        binding.ivMain.colorFilter = filter
     }
 
     private fun toggleLuminosityButton() {
@@ -82,5 +100,21 @@ class MainActivity : AppCompatActivity() {
         binding.groupLuminosity.isVisible = binding.btnLuminosity.isSelected
         binding.btnGreyScale.isSelected = false
         binding.groupGreyScale.isVisible = false
+    }
+
+    private fun collectGreyScaleSliderValue() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mainViewModel.greyScaleSliderValue.collect { value ->
+                        val grayscaleMatrix = ColorMatrix().apply {
+                            setSaturation(1f - value / 100f)
+                        }
+                        val filter = ColorMatrixColorFilter(grayscaleMatrix)
+                        binding.ivMain.colorFilter = filter
+                    }
+                }
+            }
+        }
     }
 }
