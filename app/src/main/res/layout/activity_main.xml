@@ -84,6 +84,45 @@
             app:constraint_referenced_ids="sb_luminosity, tv_luminosity"
             tools:visibility="gone"/>
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_sb_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="sb_grey_scale, sb_luminosity"
+            app:barrierAllowsGoneWidgets="true" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_sb_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="sb_grey_scale, sb_luminosity"
+            app:barrierAllowsGoneWidgets="true" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_sb_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="sb_grey_scale, sb_luminosity"
+            app:barrierAllowsGoneWidgets="true" />
+
+        <TextView
+            android:id="@+id/tv_reset_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="되돌리기"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:layout_marginEnd="20dp"
+            android:paddingVertical="8dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/barrier_sb_end"
+            app:layout_constraintTop_toTopOf="@id/barrier_sb_top"
+            app:layout_constraintBottom_toBottomOf="@id/barrier_sb_bottom"
+            android:layout_marginStart="20dp" />
+
         <ImageButton
             android:id="@+id/btn_grey_scale"
             android:layout_width="48dp"
