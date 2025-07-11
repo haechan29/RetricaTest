@@ -88,11 +88,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             1f
         }
-        val grayscaleMatrix = ColorMatrix().apply {
-            setSaturation(saturation)
-        }
-        val filter = ColorMatrixColorFilter(grayscaleMatrix)
-        binding.ivMain.colorFilter = filter
+        setGreyScaleToImage(saturation)
     }
 
     private fun toggleLuminosityButton() {
@@ -107,14 +103,18 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     mainViewModel.greyScaleSliderValue.collect { value ->
-                        val grayscaleMatrix = ColorMatrix().apply {
-                            setSaturation(1f - value / 100f)
-                        }
-                        val filter = ColorMatrixColorFilter(grayscaleMatrix)
-                        binding.ivMain.colorFilter = filter
+                        setGreyScaleToImage(1f - value / 100f)
                     }
                 }
             }
         }
+    }
+
+    private fun setGreyScaleToImage(saturation: Float) {
+        val grayscaleMatrix = ColorMatrix().apply {
+            setSaturation(saturation)
+        }
+        val filter = ColorMatrixColorFilter(grayscaleMatrix)
+        binding.ivMain.colorFilter = filter
     }
 }
