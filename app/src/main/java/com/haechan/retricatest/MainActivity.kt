@@ -84,6 +84,9 @@ class MainActivity : AppCompatActivity() {
 
         setLuminosityFilter(0f)
         toggleGreyScaleFilter()
+        binding.tvResetFilter.isVisible =
+            binding.btnGreyScale.isSelected
+                && mainViewModel.greyScaleSliderValue.value > 0
     }
 
     private fun toggleGreyScaleFilter() {
@@ -103,6 +106,9 @@ class MainActivity : AppCompatActivity() {
 
         setGreyScaleToImage(1f)
         toggleLuminosityFilter()
+        binding.tvResetFilter.isVisible =
+            binding.btnLuminosity.isSelected
+                && mainViewModel.luminositySliderValue.value > 0
     }
 
     private fun collectGreyScaleSliderValue() {
