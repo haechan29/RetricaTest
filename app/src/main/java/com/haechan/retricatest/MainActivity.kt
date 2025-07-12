@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         initBinding()
-        setSelectedButtonType()
         setOnValueChangedToSbGreyScale()
         setOnValueChangedToSbLuminosity()
         setOnTouchListenerToResetFilterBtn()
@@ -45,16 +44,6 @@ class MainActivity : AppCompatActivity() {
         collectGreyScaleSliderValue()
         collectLuminositySliderValue()
         collectSliderValue()
-    }
-
-    private fun setSelectedButtonType() {
-        binding.btnGreyScale.setOnClickListener {
-            mainViewModel.setSelectedButtonType(MainButtonType.GREY_SCALE)
-        }
-
-        binding.btnLuminosity.setOnClickListener {
-            mainViewModel.setSelectedButtonType(MainButtonType.LUMINOSITY)
-        }
     }
 
     private fun initBinding() {

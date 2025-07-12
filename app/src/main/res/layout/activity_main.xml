@@ -123,7 +123,8 @@
             android:layout_marginStart="20dp"
             app:layout_constraintStart_toEndOf="@id/barrier_sb_end"
             app:layout_constraintTop_toTopOf="@id/barrier_sb_top"
-            app:layout_constraintBottom_toBottomOf="@id/barrier_sb_bottom" />
+            app:layout_constraintBottom_toBottomOf="@id/barrier_sb_bottom"
+            tools:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/btn_grey_scale"
@@ -133,6 +134,7 @@
             android:scaleType="fitCenter"
             android:background="@drawable/circle_grey"
             android:padding="12dp"
+            android:onClick="@{(_) -> mainViewModel.setSelectedButtonType(MainButtonType.GREY_SCALE)}"
             android:contentDescription="button to convert to grey scale"
             app:layout_constraintTop_toBottomOf="@id/iv_main"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -148,6 +150,7 @@
             android:scaleType="fitCenter"
             android:background="@drawable/circle_grey"
             android:padding="12dp"
+            android:onClick="@{(_) -> mainViewModel.setSelectedButtonType(MainButtonType.LUMINOSITY)}"
             android:contentDescription="button to increase luminosity"
             app:layout_constraintTop_toTopOf="@id/btn_grey_scale"
             app:layout_constraintBottom_toBottomOf="@id/btn_grey_scale"
