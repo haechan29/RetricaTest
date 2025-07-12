@@ -148,7 +148,6 @@
             android:background="@drawable/circle_grey"
             android:padding="12dp"
             android:contentDescription="button to increase luminosity"
-            android:onClick="@{(_) -> mainViewModel.toggleLuminosityButton()}"
             app:layout_constraintTop_toTopOf="@id/btn_grey_scale"
             app:layout_constraintBottom_toBottomOf="@id/btn_grey_scale"
             app:layout_constraintStart_toEndOf="@id/btn_grey_scale"

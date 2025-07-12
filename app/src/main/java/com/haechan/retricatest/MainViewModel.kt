@@ -2,8 +2,6 @@ package com.haechan.retricatest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,9 +35,6 @@ class MainViewModel: ViewModel() {
                 || (isLuminosityButtonSelected && luminositySliderValue > 0)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    private val _effect = Channel<MainEffect>(UNLIMITED)
-    val effect = _effect.receiveAsFlow()
-
     fun setIsGreyScaleButtonSelected(value: Boolean) {
         _isGreyScaleButtonSelected.value = value
     }
@@ -54,9 +49,5 @@ class MainViewModel: ViewModel() {
 
     fun setLuminositySliderValue(value: Int) {
         _luminositySliderValue.value = value.coerceIn(0, 100)
-    }
-
-    fun toggleLuminosityButton() {
-        _effect.trySend(MainEffect.ToggleLuminosityButton)
     }
 }
