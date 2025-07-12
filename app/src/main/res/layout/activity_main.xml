@@ -6,6 +6,7 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="com.haechan.retricatest.MainButtonType" />
         <variable
             name="mainViewModel"
             type="com.haechan.retricatest.MainViewModel" />
@@ -52,7 +53,7 @@
             android:id="@+id/group_grey_scale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{mainViewModel.isGreyScaleButtonSelected() ? View.VISIBLE : View.GONE}"
+            android:visibility="@{mainViewModel.selectedButtonType == MainButtonType.GREY_SCALE ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="sb_grey_scale, tv_grey_scale"
             tools:visibility="gone"/>
 
@@ -81,7 +82,7 @@
             android:id="@+id/group_luminosity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{mainViewModel.isLuminosityButtonSelected() ? View.VISIBLE : View.GONE}"
+            android:visibility="@{mainViewModel.selectedButtonType == MainButtonType.LUMINOSITY ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="sb_luminosity, tv_luminosity"
             tools:visibility="gone"/>
 

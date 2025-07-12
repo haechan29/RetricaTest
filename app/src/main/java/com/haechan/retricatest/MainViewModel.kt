@@ -7,16 +7,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel: ViewModel() {
 
-    private val _isGreyScaleButtonSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isGreyScaleButtonSelected: StateFlow<Boolean> = _isGreyScaleButtonSelected.asStateFlow()
-
-    private val _isLuminosityButtonSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isLuminosityButtonSelected: StateFlow<Boolean> = _isLuminosityButtonSelected.asStateFlow()
+    private val _selectedButtonType: MutableStateFlow<MainButtonType> = MutableStateFlow(MainButtonType.NONE)
+    val selectedButtonType: StateFlow<MainButtonType> = _selectedButtonType.asStateFlow()
 
     private val _greyScaleSliderValue: MutableStateFlow<Int> = MutableStateFlow(0)
     val greyScaleSliderValue: StateFlow<Int> = _greyScaleSliderValue.asStateFlow()
@@ -26,21 +23,20 @@ class MainViewModel: ViewModel() {
 
     val canResetFilter: StateFlow<Boolean> =
         combine(
-            isGreyScaleButtonSelected,
-            isLuminosityButtonSelected,
+            selectedButtonType,
             greyScaleSliderValue,
             luminositySliderValue
-        ) { isGreyScaleButtonSelected, isLuminosityButtonSelected, greyScaleSliderValue, luminositySliderValue ->
-            (isGreyScaleButtonSelected && greyScaleSliderValue > 0)
-                || (isLuminosityButtonSelected && luminositySliderValue > 0)
+        ) { selectedButtonType, greyScaleSliderValue, luminositySliderValue ->
+            (selectedButtonType == MainButtonType.GREY_SCALE && greyScaleSliderValue > 0)
+                || (selectedButtonType == MainButtonType.LUMINOSITY && luminositySliderValue > 0)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    fun setIsGreyScaleButtonSelected(value: Boolean) {
-        _isGreyScaleButtonSelected.value = value
-    }
-
-    fun setIsLuminosityButtonSelected(value: Boolean) {
-        _isLuminosityButtonSelected.value = value
+    fun setSelectedButtonType(selectedButtonType: MainButtonType) {
+        if (this.selectedButtonType.value == selectedButtonType) {
+            _selectedButtonType.value = MainButtonType.NONE
+        } else {
+            _selectedButtonType.value = selectedButtonType
+        }
     }
 
     fun setGreyScaleSliderValue(value: Int) {
