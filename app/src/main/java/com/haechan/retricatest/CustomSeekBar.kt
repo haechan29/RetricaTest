@@ -8,17 +8,40 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.OverScroller
 
 class CustomSeekBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
+    companion object {
+        private const val SCROLL_SENSITIVITY = 0.3f
+    }
+
     var onValueChanged: ((Float) -> Unit)? = null
 
     private var value: Float = -1f
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+
+        private var lastFlingX = 0f
+        private val scroller = OverScroller(context)
+        private val flingRunnable = object : Runnable {
+            override fun run() {
+                if (scroller.computeScrollOffset()) {
+                    val newX = scroller.currX.toFloat()
+                    val delta = (lastFlingX - newX) / width * SCROLL_SENSITIVITY
+                    value = (value + delta).coerceIn(-1f, 1f)
+                    onValueChanged?.invoke(value)
+                    invalidate()
+
+                    lastFlingX = newX
+                    postOnAnimation(this)
+                }
+            }
+        }
+
         override fun onScroll(
             e1: MotionEvent?,
             e2: MotionEvent,
@@ -33,6 +56,24 @@ class CustomSeekBar @JvmOverloads constructor(
         }
 
         override fun onDown(e: MotionEvent): Boolean {
+            scroller.forceFinished(true)
+            return true
+        }
+
+        override fun onFling(
+            e1: MotionEvent?,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            scroller.fling(
+                0, 0,
+                velocityX.toInt(), 0,
+                Int.MIN_VALUE, Int.MAX_VALUE,
+                0, 0
+            )
+            lastFlingX = 0f
+            postOnAnimation(flingRunnable)
             return true
         }
     })
