@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel: ViewModel() {
@@ -21,11 +20,13 @@ class MainViewModel: ViewModel() {
     private val _luminositySliderValue: MutableStateFlow<Int> = MutableStateFlow(0)
     val luminositySliderValue: StateFlow<Int> = _luminositySliderValue.asStateFlow()
 
+    private val _isResetFilterButtonPressed: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     val canResetFilter: StateFlow<Boolean> =
         combine(
-            selectedButtonType,
-            greyScaleSliderValue,
-            luminositySliderValue
+            _selectedButtonType,
+            _greyScaleSliderValue,
+            _luminositySliderValue
         ) { selectedButtonType, greyScaleSliderValue, luminositySliderValue ->
             (selectedButtonType == MainButtonType.GREY_SCALE && greyScaleSliderValue > 0)
                 || (selectedButtonType == MainButtonType.LUMINOSITY && luminositySliderValue > 0)
@@ -33,10 +34,12 @@ class MainViewModel: ViewModel() {
 
     val colorFilerState: StateFlow<MainColorFilterType> =
         combine(
-            selectedButtonType,
-            greyScaleSliderValue,
-            luminositySliderValue
-        ) { selectedButtonType, greyScaleSliderValue, luminositySliderValue ->
+            _selectedButtonType,
+            _greyScaleSliderValue,
+            _luminositySliderValue,
+            _isResetFilterButtonPressed
+        ) { selectedButtonType, greyScaleSliderValue, luminositySliderValue, isResetFilterButtonPressed ->
+            if (isResetFilterButtonPressed) return@combine MainColorFilterType.None
             when (selectedButtonType) {
                 MainButtonType.GREY_SCALE -> MainColorFilterType.GreyScale(1f - greyScaleSliderValue / 100f)
                 MainButtonType.LUMINOSITY -> MainColorFilterType.Luminosity(luminositySliderValue / 100f)
@@ -58,5 +61,9 @@ class MainViewModel: ViewModel() {
 
     fun setLuminositySliderValue(value: Int) {
         _luminositySliderValue.value = value.coerceIn(0, 100)
+    }
+
+    fun setIsResetFilterButtonPressed(isResetFilterButtonPressed: Boolean) {
+        _isResetFilterButtonPressed.value = isResetFilterButtonPressed
     }
 }

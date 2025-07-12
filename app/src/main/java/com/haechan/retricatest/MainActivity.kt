@@ -64,22 +64,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setOnTouchListenerToResetFilterBtn() {
-        var temp: ColorFilter? = null
         binding.tvResetFilter.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    temp = binding.ivMain.colorFilter
-                    binding.ivMain.clearColorFilter()
-                    true
+                    mainViewModel.setIsResetFilterButtonPressed(true)
                 }
                 MotionEvent.ACTION_UP,
                 MotionEvent.ACTION_CANCEL -> {
-                    binding.ivMain.colorFilter = temp
-                    temp = null
-                    true
+                    mainViewModel.setIsResetFilterButtonPressed(false)
                 }
-                else -> false
             }
+            true
         }
     }
 
