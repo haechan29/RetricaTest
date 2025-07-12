@@ -18,6 +18,10 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private const val LUMINOSITY_FILTER_LIMIT = 0.6f
+    }
+
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel by viewModels<MainViewModel>()
 
@@ -110,7 +114,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createLuminosityColorFilter(luminosity: Float): ColorMatrixColorFilter {
-        val scaled = luminosity * 255f * 0.8f
+        val scaled = luminosity * 255f * LUMINOSITY_FILTER_LIMIT
         val luminosityMatrix = ColorMatrix(
             floatArrayOf(
                 1f, 0f, 0f, 0f, scaled,
