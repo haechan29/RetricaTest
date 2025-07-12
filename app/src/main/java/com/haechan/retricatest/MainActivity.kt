@@ -1,22 +1,18 @@
 package com.haechan.retricatest
 
-import android.graphics.ColorFilter
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.haechan.retricatest.databinding.ActivityMainBinding
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -86,17 +82,17 @@ class MainActivity : AppCompatActivity() {
                     binding.sbLuminosity.stopFling()
                     binding.btnGreyScale.isSelected = false
                     binding.btnLuminosity.isSelected = false
-                    setLuminosityFilter(0f)
-                    setGreyScaleToImage(1f)
+                    createLuminosityColorFilter(0f)
+                    createGreyScaleColorFilter(1f)
 
                     when (it) {
                         MainButtonType.GREY_SCALE -> {
                             binding.btnGreyScale.isSelected = true
-                            setGreyScaleToImage(1f - mainViewModel.greyScaleSliderValue.value / 100f)
+                            createGreyScaleColorFilter(1f - mainViewModel.greyScaleSliderValue.value / 100f)
                         }
                         MainButtonType.LUMINOSITY -> {
                             binding.btnLuminosity.isSelected = true
-                            setLuminosityFilter(mainViewModel.luminositySliderValue.value / 100f)
+                            createLuminosityColorFilter(mainViewModel.luminositySliderValue.value / 100f)
                         }
                         MainButtonType.NONE -> {}
                     }
@@ -109,25 +105,25 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.colorFilerState.collect {
-                    when (it) {
-                        is MainColorFilterType.GreyScale -> setGreyScaleToImage(it.saturation)
-                        is MainColorFilterType.Luminosity -> setLuminosityFilter(it.luminosity)
-                        MainColorFilterType.None -> binding.ivMain.clearColorFilter()
+                    val filter = when (it) {
+                        is MainColorFilterType.GreyScale -> createGreyScaleColorFilter(it.saturation)
+                        is MainColorFilterType.Luminosity -> createLuminosityColorFilter(it.luminosity)
+                        MainColorFilterType.None -> null
                     }
+                    binding.ivMain.colorFilter = filter
                 }
             }
         }
     }
 
-    private fun setGreyScaleToImage(saturation: Float) {
+    private fun createGreyScaleColorFilter(saturation: Float): ColorMatrixColorFilter {
         val grayscaleMatrix = ColorMatrix().apply {
             setSaturation(saturation)
         }
-        val filter = ColorMatrixColorFilter(grayscaleMatrix)
-        binding.ivMain.colorFilter = filter
+        return ColorMatrixColorFilter(grayscaleMatrix)
     }
 
-    private fun setLuminosityFilter(luminosity: Float) {
+    private fun createLuminosityColorFilter(luminosity: Float): ColorMatrixColorFilter {
         val scaled = luminosity * 255f * 0.8f
         val luminosityMatrix = ColorMatrix(
             floatArrayOf(
@@ -137,7 +133,6 @@ class MainActivity : AppCompatActivity() {
                 0f, 0f, 0f, 1f, 0f
             )
         )
-        val filter = ColorMatrixColorFilter(luminosityMatrix)
-        binding.ivMain.colorFilter = filter
+        return ColorMatrixColorFilter(luminosityMatrix)
     }
 }
