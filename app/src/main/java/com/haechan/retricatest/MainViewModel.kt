@@ -42,10 +42,6 @@ class MainViewModel: ViewModel() {
         _luminositySliderValue.value = value.coerceIn(0, 100)
     }
 
-    fun toggleGreyScaleButton() {
-        _effect.trySend(MainEffect.ToggleGreyScaleButton)
-    }
-
     fun toggleLuminosityButton() {
         _effect.trySend(MainEffect.ToggleLuminosityButton)
     }

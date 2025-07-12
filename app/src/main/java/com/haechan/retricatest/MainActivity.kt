@@ -51,7 +51,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setIsGreyScaleButtonSelected() {
         binding.btnGreyScale.setOnClickListener {
-            mainViewModel.setIsGreyScaleButtonSelected(!binding.btnGreyScale.isSelected)
+            binding.btnGreyScale.isSelected = !binding.btnGreyScale.isSelected
+            mainViewModel.setIsGreyScaleButtonSelected(binding.btnGreyScale.isSelected)
         }
     }
 
@@ -112,6 +113,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun toggleGreyScaleFilter() {
+        val saturation = if (binding.btnGreyScale.isSelected) {
+            1f - mainViewModel.greyScaleSliderValue.value / 100f
+        } else {
+            1f
+        }
+        setGreyScaleToImage(saturation)
+    }
+
     private fun toggleLuminosityButton() {
         binding.btnLuminosity.isSelected = !binding.btnLuminosity.isSelected
         binding.groupLuminosity.isVisible = binding.btnLuminosity.isSelected
@@ -129,22 +139,11 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.isGreyScaleButtonSelected.collect { value ->
-                    binding.btnGreyScale.isSelected = value
                     binding.btnLuminosity.isSelected = false
-                    setLuminosityFilter(0f)
-                    toggleGreyScaleFilter()
+                    setGreyScaleToImage(1f)
                 }
             }
         }
-    }
-
-    private fun toggleGreyScaleFilter() {
-        val saturation = if (binding.btnGreyScale.isSelected) {
-            1f - mainViewModel.greyScaleSliderValue.value / 100f
-        } else {
-            1f
-        }
-        setGreyScaleToImage(saturation)
     }
 
     private fun collectGreyScaleSliderValue() {
