@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.selectedButtonType.collect {
+                    binding.sbGreyScale.stopFling()
+                    binding.sbLuminosity.stopFling()
                     binding.btnGreyScale.isSelected = false
                     binding.btnLuminosity.isSelected = false
                     setLuminosityFilter(0f)

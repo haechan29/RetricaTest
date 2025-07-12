@@ -22,11 +22,11 @@ class CustomSeekBar @JvmOverloads constructor(
     var onValueChanged: ((Float) -> Unit)? = null
 
     private var value: Float = -1f
+    private val scroller = OverScroller(context)
 
     private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
 
         private var lastFlingX = 0f
-        private val scroller = OverScroller(context)
         private val flingRunnable = object : Runnable {
             override fun run() {
                 if (scroller.computeScrollOffset()) {
@@ -110,5 +110,9 @@ class CustomSeekBar @JvmOverloads constructor(
             strokeWidth = 4f
         }
         canvas.drawLine(centerX, 0f, centerX, height.toFloat(), centerLinePaint)
+    }
+
+    fun stopFling() {
+        scroller.forceFinished(true)
     }
 }
