@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="mainViewModel"
             type="com.haechan.retricatest.MainViewModel" />
@@ -117,7 +118,7 @@
             android:textColor="@color/white"
             android:layout_marginEnd="20dp"
             android:paddingVertical="8dp"
-            android:visibility="gone"
+            android:visibility="@{mainViewModel.canResetFilter ? View.VISIBLE : View.GONE}"
             android:layout_marginStart="20dp"
             app:layout_constraintStart_toEndOf="@id/barrier_sb_end"
             app:layout_constraintTop_toTopOf="@id/barrier_sb_top"

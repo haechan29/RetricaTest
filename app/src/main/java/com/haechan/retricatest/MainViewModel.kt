@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel: ViewModel() {
 
@@ -22,6 +25,17 @@ class MainViewModel: ViewModel() {
 
     private val _luminositySliderValue: MutableStateFlow<Int> = MutableStateFlow(0)
     val luminositySliderValue: StateFlow<Int> = _luminositySliderValue.asStateFlow()
+
+    val canResetFilter: StateFlow<Boolean> =
+        combine(
+            isGreyScaleButtonSelected,
+            isLuminosityButtonSelected,
+            greyScaleSliderValue,
+            luminositySliderValue
+        ) { isGreyScaleButtonSelected, isLuminosityButtonSelected, greyScaleSliderValue, luminositySliderValue ->
+            (isGreyScaleButtonSelected && greyScaleSliderValue > 0)
+                || (isLuminosityButtonSelected && luminositySliderValue > 0)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     private val _effect = Channel<MainEffect>(UNLIMITED)
     val effect = _effect.receiveAsFlow()
