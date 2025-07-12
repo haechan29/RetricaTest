@@ -80,22 +80,8 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.selectedButtonType.collect {
                     binding.sbGreyScale.stopFling()
                     binding.sbLuminosity.stopFling()
-                    binding.btnGreyScale.isSelected = false
-                    binding.btnLuminosity.isSelected = false
-                    createLuminosityColorFilter(0f)
-                    createGreyScaleColorFilter(1f)
-
-                    when (it) {
-                        MainButtonType.GREY_SCALE -> {
-                            binding.btnGreyScale.isSelected = true
-                            createGreyScaleColorFilter(1f - mainViewModel.greyScaleSliderValue.value / 100f)
-                        }
-                        MainButtonType.LUMINOSITY -> {
-                            binding.btnLuminosity.isSelected = true
-                            createLuminosityColorFilter(mainViewModel.luminositySliderValue.value / 100f)
-                        }
-                        MainButtonType.NONE -> {}
-                    }
+                    binding.btnGreyScale.isSelected = it == MainButtonType.GREY_SCALE
+                    binding.btnLuminosity.isSelected = it == MainButtonType.LUMINOSITY
                 }
             }
         }
