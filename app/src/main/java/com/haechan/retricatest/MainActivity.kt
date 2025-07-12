@@ -41,9 +41,7 @@ class MainActivity : AppCompatActivity() {
         setOnValueChangedToSbLuminosity()
         setOnTouchListenerToResetFilterBtn()
         collectSelectedButtonType()
-        collectGreyScaleSliderValue()
-        collectLuminositySliderValue()
-        collectSliderValue()
+        collectColorFilerState()
     }
 
     private fun initBinding() {
@@ -112,11 +110,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun collectGreyScaleSliderValue() {
+    private fun collectColorFilerState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.greyScaleSliderValue.collect { value ->
-                    setGreyScaleToImage(1f - value / 100f)
+                mainViewModel.colorFilerState.collect {
+                    when (it) {
+                        is MainColorFilterType.GreyScale -> setGreyScaleToImage(it.saturation)
+                        is MainColorFilterType.Luminosity -> setLuminosityFilter(it.luminosity)
+                        MainColorFilterType.None -> binding.ivMain.clearColorFilter()
+                    }
                 }
             }
         }
@@ -128,16 +130,6 @@ class MainActivity : AppCompatActivity() {
         }
         val filter = ColorMatrixColorFilter(grayscaleMatrix)
         binding.ivMain.colorFilter = filter
-    }
-
-    private fun collectLuminositySliderValue() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.luminositySliderValue.collect { value ->
-                    setLuminosityFilter(value / 100f)
-                }
-            }
-        }
     }
 
     private fun setLuminosityFilter(luminosity: Float) {

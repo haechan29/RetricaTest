@@ -31,6 +31,19 @@ class MainViewModel: ViewModel() {
                 || (selectedButtonType == MainButtonType.LUMINOSITY && luminositySliderValue > 0)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
+    val colorFilerState: StateFlow<MainColorFilterType> =
+        combine(
+            selectedButtonType,
+            greyScaleSliderValue,
+            luminositySliderValue
+        ) { selectedButtonType, greyScaleSliderValue, luminositySliderValue ->
+            when (selectedButtonType) {
+                MainButtonType.GREY_SCALE -> MainColorFilterType.GreyScale(1f - greyScaleSliderValue / 100f)
+                MainButtonType.LUMINOSITY -> MainColorFilterType.Luminosity(luminositySliderValue / 100f)
+                MainButtonType.NONE -> MainColorFilterType.None
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), MainColorFilterType.None)
+
     fun setSelectedButtonType(selectedButtonType: MainButtonType) {
         if (this.selectedButtonType.value == selectedButtonType) {
             _selectedButtonType.value = MainButtonType.NONE
