@@ -87,12 +87,10 @@ class MainActivity : AppCompatActivity() {
     private fun collectEffect() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    mainViewModel.effect.collect {
-                        when (it) {
-                            MainEffect.ToggleGreyScaleButton -> toggleGreyScaleButton()
-                            MainEffect.ToggleLuminosityButton -> toggleLuminosityButton()
-                        }
+                mainViewModel.effect.collect {
+                    when (it) {
+                        MainEffect.ToggleGreyScaleButton -> toggleGreyScaleButton()
+                        MainEffect.ToggleLuminosityButton -> toggleLuminosityButton()
                     }
                 }
             }
@@ -137,10 +135,8 @@ class MainActivity : AppCompatActivity() {
     private fun collectGreyScaleSliderValue() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    mainViewModel.greyScaleSliderValue.collect { value ->
-                        setGreyScaleToImage(1f - value / 100f)
-                    }
+                mainViewModel.greyScaleSliderValue.collect { value ->
+                    setGreyScaleToImage(1f - value / 100f)
                 }
             }
         }
@@ -157,10 +153,8 @@ class MainActivity : AppCompatActivity() {
     private fun collectLuminositySliderValue() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    mainViewModel.luminositySliderValue.collect { value ->
-                        setLuminosityFilter(value / 100f)
-                    }
+                mainViewModel.luminositySliderValue.collect { value ->
+                    setLuminosityFilter(value / 100f)
                 }
             }
         }
@@ -192,16 +186,14 @@ class MainActivity : AppCompatActivity() {
     private fun collectSliderValue() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    combine(
-                        mainViewModel.greyScaleSliderValue,
-                        mainViewModel.luminositySliderValue
-                    ) { greyScale, luminosity ->
-                        (binding.btnGreyScale.isSelected && greyScale > 0)
+                combine(
+                    mainViewModel.greyScaleSliderValue,
+                    mainViewModel.luminositySliderValue
+                ) { greyScale, luminosity ->
+                    (binding.btnGreyScale.isSelected && greyScale > 0)
                             || (binding.btnLuminosity.isSelected && luminosity > 0)
-                    }.collect { isFilterApplied ->
-                        binding.tvResetFilter.isVisible = isFilterApplied
-                    }
+                }.collect { isFilterApplied ->
+                    binding.tvResetFilter.isVisible = isFilterApplied
                 }
             }
         }
