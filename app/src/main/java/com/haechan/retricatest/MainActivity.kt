@@ -5,6 +5,7 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -36,13 +37,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         initBinding()
+        setIsGreyScaleButtonSelected()
+        setIsLuminosityButtonSelected()
         setOnValueChangedToSbGreyScale()
         setOnValueChangedToSbLuminosity()
         setOnTouchListenerToResetFilterBtn()
         collectEffect()
+        collectIsGretScaleButtonSelected()
         collectGreyScaleSliderValue()
         collectLuminositySliderValue()
         collectSliderValue()
+    }
+
+    private fun setIsGreyScaleButtonSelected() {
+        binding.btnGreyScale.setOnClickListener {
+            mainViewModel.setIsGreyScaleButtonSelected(!binding.btnGreyScale.isSelected)
+        }
+    }
+
+    private fun setIsLuminosityButtonSelected() {
+        binding.btnLuminosity.setOnClickListener {
+            mainViewModel.setIsLuminosityButtonSelected(binding.btnLuminosity.isSelected)
+        }
     }
 
     private fun initBinding() {
@@ -89,34 +105,11 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.effect.collect {
                     when (it) {
-                        MainEffect.ToggleGreyScaleButton -> toggleGreyScaleButton()
                         MainEffect.ToggleLuminosityButton -> toggleLuminosityButton()
                     }
                 }
             }
         }
-    }
-
-    private fun toggleGreyScaleButton() {
-        binding.btnGreyScale.isSelected = !binding.btnGreyScale.isSelected
-        binding.groupGreyScale.isVisible = binding.btnGreyScale.isSelected
-        binding.btnLuminosity.isSelected = false
-        binding.groupLuminosity.isVisible = false
-
-        setLuminosityFilter(0f)
-        toggleGreyScaleFilter()
-        binding.tvResetFilter.isVisible =
-            binding.btnGreyScale.isSelected
-                && mainViewModel.greyScaleSliderValue.value > 0
-    }
-
-    private fun toggleGreyScaleFilter() {
-        val saturation = if (binding.btnGreyScale.isSelected) {
-            1f - mainViewModel.greyScaleSliderValue.value / 100f
-        } else {
-            1f
-        }
-        setGreyScaleToImage(saturation)
     }
 
     private fun toggleLuminosityButton() {
@@ -130,6 +123,28 @@ class MainActivity : AppCompatActivity() {
         binding.tvResetFilter.isVisible =
             binding.btnLuminosity.isSelected
                 && mainViewModel.luminositySliderValue.value > 0
+    }
+
+    private fun collectIsGretScaleButtonSelected() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.isGreyScaleButtonSelected.collect { value ->
+                    binding.btnGreyScale.isSelected = value
+                    binding.btnLuminosity.isSelected = false
+                    setLuminosityFilter(0f)
+                    toggleGreyScaleFilter()
+                }
+            }
+        }
+    }
+
+    private fun toggleGreyScaleFilter() {
+        val saturation = if (binding.btnGreyScale.isSelected) {
+            1f - mainViewModel.greyScaleSliderValue.value / 100f
+        } else {
+            1f
+        }
+        setGreyScaleToImage(saturation)
     }
 
     private fun collectGreyScaleSliderValue() {
